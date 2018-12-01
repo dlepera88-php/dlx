@@ -1,6 +1,6 @@
 {
   "name": "dlepera88-php/dlx",
-  "version": "1.0.0",
+  "version": "1.0.0-dev",
   "license": "MIT",
   "require": {
     "doctrine/orm": "2.6.*",
