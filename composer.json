@@ -10,7 +10,7 @@
   },
   "autoload": {
     "psr-4": {
-      "DLX\\": "src/DLX/"
+      "DLX\\": "./src/DLX/"
     }
   }
 }
