@@ -2,6 +2,9 @@
   "name": "dlepera88-php/dlx",
   "version": "1.0.0-dev",
   "license": "MIT",
+  "authors": [
+    {"name": "Diego Lepera", "email": "dlepera88@gmail.com"}
+  ],
   "require": {
     "doctrine/orm": "2.6.*",
     "phpunit/phpunit": "7.3.5",
@@ -12,5 +15,8 @@
     "psr-4": {
       "DLX\\": "./src/DLX/"
     }
+  },
+  "suggest": {
+    "dlepera88-php/painel-dlx": "Painel de administração"
   }
 }
