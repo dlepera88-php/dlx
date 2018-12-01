@@ -1,0 +1,16 @@
+{
+  "name": "dlepera88-php/dlx",
+  "version": "1.0.0",
+  "license": "MIT",
+  "require": {
+    "doctrine/orm": "2.6.*",
+    "phpunit/phpunit": "7.3.5",
+    "symfony/yaml": "^4.1.6",
+    "zendframework/zend-diactoros": "^2.0"
+  },
+  "autoload": {
+    "psr-4": {
+
+    }
+  }
+}
