@@ -23,14 +23,14 @@
  * SOFTWARE.
  */
 
-namespace DLX\Application\Commands;
+namespace DLX\Contracts;
 
 
-interface CommandInterface
+interface ServiceInterface
 {
     /**
-     * Request completa do comando
-     * @return array Retorna um array associativo. A chave é o nome da propriedade e o valor seu respectivo valor
+     * Executar o serviço.
+     * @return mixed
      */
-    public function getRequest(): array;
+    public function executar();
 }
