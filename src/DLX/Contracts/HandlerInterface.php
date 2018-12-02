@@ -30,5 +30,5 @@ use DLX\Contracts\CommandInterface;
 
 interface HandlerInterface
 {
-    public function handler(CommandInterface $command);
+    public function handle(CommandInterface $command);
 }
