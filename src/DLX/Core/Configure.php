@@ -27,6 +27,7 @@ namespace DLX\Core;
 
 
 use DLX\Core\Exceptions\ArquivoConfiguracaoNaoEncontradoException;
+use DLX\Core\Exceptions\ArquivoConfiguracaoNaoInformadoException;
 
 class Configure
 {
@@ -35,57 +36,97 @@ class Configure
     const DEV = 'dev';
 
     /** @var string */
-    private $ambiente;
+    private static $ambiente;
     /** @var string */
-    private $tipo;
+    private static $tipo;
 
     /**
      * @return string
      */
-    public function getAmbiente(): string
+    public static function getAmbiente(): string
     {
-        return $this->ambiente;
+        return self::$ambiente;
     }
 
     /**
      * @return string
      */
-    public function getTipo(): string
+    public static function getTipo(): string
     {
-        return $this->tipo;
+        return self::$tipo;
     }
 
-    public function __construct(string $ambiente, string $tipo = self::DEV)
+    /**
+     * Iniciar configuração de um determinado ambiente.
+     * @param string $ambiente
+     * @param string $arquivo |null
+     * @throws ArquivoConfiguracaoNaoEncontradoException
+     * @throws ArquivoConfiguracaoNaoInformadoException
+     */
+    public static function init(string $ambiente, ?string $arquivo = null)
     {
-        $this->ambiente = $ambiente;
-        $this->tipo = $tipo;
+        self::$ambiente = $ambiente;
+
+        if (!self::hasAmbiente($ambiente)) {
+            if (empty($arquivo)) {
+                throw new ArquivoConfiguracaoNaoInformadoException($ambiente);
+            }
+
+            self::carregarConfiguracao($arquivo);
+        }
+
+        // Verificar a configuração carregada e setar o tipo de ambiente
+        // O tipo do ambiente deve ser informado na configutação 'tipo-ambiente'
+        // Quando nenhum tipo de ambiente é informado, o sistema assume que é um ambiente de desenvolvimento
+        self::$tipo = self::get('tipo-ambiente') ?? self::DEV;
     }
 
     /**
      * Verifica se o ambiente foi onfigurado como um ambiente produção
      * @return bool
      */
-    public function isProducao(): bool
+    public static function isProducao(): bool
     {
-        return $this->tipo === self::PRODUCAO;
+        return self::$tipo === self::PRODUCAO;
     }
 
     /**
      * Verifica se o ambiente foi configurado como um ambiente de homologação
      * @return bool
      */
-    public function isHomologacao(): bool
+    public static function isHomologacao(): bool
     {
-        return $this->tipo === self::HOMOLOGACAO;
+        return self::$tipo === self::HOMOLOGACAO;
     }
 
     /**
      * Verifica se o ambiente foi configurado como um ambiente de desenvolvimento.
      * @return bool
      */
-    public function isDev(): bool
+    public static function isDev(): bool
     {
-        return $this->tipo === self::DEV;
+        return self::$tipo === self::DEV;
+    }
+
+    /**
+     * Verificar se um determinado ambiente já foi iniciado.
+     * @param string $ambiente
+     * @return bool
+     */
+    public static function hasAmbiente(string $ambiente): bool
+    {
+        return array_key_exists($ambiente, $_ENV);
+    }
+
+    /**
+     * Trocar o apontamento do Configure para outro ambiente
+     * @param string $novo_ambiente
+     * @throws ArquivoConfiguracaoNaoEncontradoException
+     * @throws ArquivoConfiguracaoNaoInformadoException
+     */
+    public static function trocarAmbiente(string $novo_ambiente): void
+    {
+        self::init($novo_ambiente);
     }
 
     /**
@@ -93,13 +134,13 @@ class Configure
      * @param string $configs Nomes das configurações aninhadas.
      * @return mixed|null
      */
-    public function get(string ...$configs)
+    public static function get(string ...$configs)
     {
-        if (!array_key_exists($this->ambiente, $_ENV)) {
+        if (!self::hasAmbiente(self::$ambiente)) {
             return null;
         }
 
-        $conf_desejada = $_ENV[$this->ambiente];
+        $conf_desejada = $_ENV[self::$ambiente];
 
         foreach ($configs as $conf) {
             if (!array_key_exists($conf, $conf_desejada)) {
@@ -117,12 +158,12 @@ class Configure
      * @param string $arquivo_configuracao
      * @throws ArquivoConfiguracaoNaoEncontradoException
      */
-    public function carregarConfiguracao(string $arquivo_configuracao): void
+    public static function carregarConfiguracao(string $arquivo_configuracao): void
     {
         if (!file_exists($arquivo_configuracao)) {
             throw new ArquivoConfiguracaoNaoEncontradoException($arquivo_configuracao);
         }
 
-        $_ENV[$this->ambiente] = include_once $arquivo_configuracao;
+        $_ENV[self::$ambiente] = include_once $arquivo_configuracao;
     }
 }
