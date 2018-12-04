@@ -17,7 +17,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "DLX\\Testes\\": "tests/"
+      "DLX\\Tests\\": "tests/"
     }
   },
   "suggest": {

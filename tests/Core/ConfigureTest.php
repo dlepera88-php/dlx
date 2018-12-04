@@ -32,17 +32,15 @@ use PHPUnit\Framework\TestCase;
 
 class ConfigureTest extends TestCase
 {
-    /** @var Configure */
-    private static $configure;
 
     /**
      * @throws ArquivoConfiguracaoNaoEncontradoException
+     * @throws \DLX\Core\Exceptions\ArquivoConfiguracaoNaoInformadoException
      */
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        self::$configure = new Configure('dlx', Configure::DEV);
-        self::$configure->carregarConfiguracao('Exemplos/configuracao.php');
+        Configure::init('dlx', 'Exemplos/configuracao.php');
     }
 
 
@@ -52,7 +50,7 @@ class ConfigureTest extends TestCase
     public function test_carregarConfiguracao_com_arquivo_invalido()
     {
         $this->expectException(ArquivoConfiguracaoNaoEncontradoException::class);
-        self::$configure->carregarConfiguracao('teste.php');
+        Configure::carregarConfiguracao('teste.php');
     }
 
     /**
@@ -68,7 +66,7 @@ class ConfigureTest extends TestCase
      */
     public function test_get_configuracao_nao_existe()
     {
-        $this->assertNull(self::$configure->get('teste'));
+        $this->assertNull(Configure::get('teste'));
     }
 
     /**
@@ -76,7 +74,7 @@ class ConfigureTest extends TestCase
      */
     public function test_get_configuracao_valida()
     {
-        $this->assertNotNull(self::$configure->get('bd'));
+        $this->assertNotNull(Configure::get('bd'));
     }
 
     /**
@@ -84,7 +82,7 @@ class ConfigureTest extends TestCase
      */
     public function test_get_configuracao_mais_de_um_nivel()
     {
-        $conf = self::$configure->get('bd', 'orm');
+        $conf = Configure::get('bd', 'orm');
 
         $this->assertNotNull($conf);
         $this->assertEquals($conf, 'doctrine');
