@@ -8,6 +8,7 @@
 
 namespace DLX\Infra;
 
+use DLX\Infra\Exceptions\EntityManagerNaoEncontradoException;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager as DoctrineEntityManager;
 
@@ -16,7 +17,7 @@ class EntityManagerFactory
     const ORM_DOCTRINE = 'doctrine';
 
     /**
-     * Criar uma inst‚ncia do EntityManager a ser utilizado de acordo com a configuraÁ„o.
+     * Criar uma inst√¢ncia do EntityManager a ser utilizado de acordo com a configura√ß√£o.
      * @param string $tipo_em Tipo de EntityManager
      * @param array $conexao
      * @param array $config
@@ -42,7 +43,7 @@ class EntityManagerFactory
                 return DoctrineEntityManager::create($conexao, $doctrine_config);
                 break;
             default:
-                throw new \Exception('EntityManager n„o localizado.');
+                throw new EntityManagerNaoEncontradoException($tipo_em);
         }
     }
 }
