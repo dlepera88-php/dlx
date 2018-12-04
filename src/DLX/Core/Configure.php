@@ -90,16 +90,26 @@ class Configure
 
     /**
      * Obter o valor de uma determinada configuração.
-     * @param string $nome
+     * @param string $configs Nomes das configurações aninhadas.
      * @return mixed|null
      */
-    public function get(string $nome)
+    public function get(string ...$configs)
     {
-        if (!array_key_exists($this->ambiente, $_ENV) || !array_key_exists($nome, $_ENV[$this->ambiente])) {
+        if (!array_key_exists($this->ambiente, $_ENV)) {
             return null;
         }
 
-        return $_ENV[$this->ambiente][$nome];
+        $conf_desejada = $_ENV[$this->ambiente];
+
+        foreach ($configs as $conf) {
+            if (!array_key_exists($conf, $conf_desejada)) {
+                return null;
+            }
+
+            $conf_desejada = $conf_desejada[$conf];
+        }
+
+        return $conf_desejada;
     }
 
     /**

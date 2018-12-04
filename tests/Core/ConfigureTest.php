@@ -32,15 +32,27 @@ use PHPUnit\Framework\TestCase;
 
 class ConfigureTest extends TestCase
 {
+    /** @var Configure */
+    private static $configure;
+
+    /**
+     * @throws ArquivoConfiguracaoNaoEncontradoException
+     */
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+        self::$configure = new Configure('dlx', Configure::DEV);
+        self::$configure->carregarConfiguracao('Exemplos/configuracao.php');
+    }
+
+
     /**
      * @throws ArquivoConfiguracaoNaoEncontradoException
      */
     public function test_carregarConfiguracao_com_arquivo_invalido()
     {
         $this->expectException(ArquivoConfiguracaoNaoEncontradoException::class);
-
-        $configure = new Configure('dlx', Configure::DEV);
-        $configure->carregarConfiguracao('teste.php');
+        self::$configure->carregarConfiguracao('teste.php');
     }
 
     /**
@@ -48,9 +60,6 @@ class ConfigureTest extends TestCase
      */
     public function test_carregarConfiguracao_com_arquivo_exemplo()
     {
-        $configure = new Configure('dlx', Configure::DEV);
-        $configure->carregarConfiguracao('Exemplos/configuracao.php');
-
         $this->assertArrayHasKey('dlx', $_ENV);
     }
 
@@ -59,10 +68,7 @@ class ConfigureTest extends TestCase
      */
     public function test_get_configuracao_nao_existe()
     {
-        $configure = new Configure('dlx', Configure::DEV);
-        $configure->carregarConfiguracao('Exemplos/configuracao.php');
-
-        $this->assertNull($configure->get('teste'));
+        $this->assertNull(self::$configure->get('teste'));
     }
 
     /**
@@ -70,9 +76,17 @@ class ConfigureTest extends TestCase
      */
     public function test_get_configuracao_valida()
     {
-        $configure = new Configure('dlx', Configure::DEV);
-        $configure->carregarConfiguracao('Exemplos/configuracao.php');
+        $this->assertNotNull(self::$configure->get('bd'));
+    }
 
-        $this->assertNotNull($configure->get('bd'));
+    /**
+     * @throws ArquivoConfiguracaoNaoEncontradoException
+     */
+    public function test_get_configuracao_mais_de_um_nivel()
+    {
+        $conf = self::$configure->get('bd', 'orm');
+
+        $this->assertNotNull($conf);
+        $this->assertEquals($conf, 'doctrine');
     }
 }
