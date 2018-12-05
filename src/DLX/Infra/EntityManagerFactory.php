@@ -9,6 +9,7 @@
 namespace DLX\Infra;
 
 use DLX\Infra\Exceptions\EntityManagerNaoEncontradoException;
+use Doctrine\DBAL\Logging\EchoSQLLogger;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager as DoctrineEntityManager;
 
@@ -38,6 +39,10 @@ class EntityManagerFactory
                         break;
                     default:
                         $doctrine_config = Setup::createAnnotationMetadataConfiguration($config['dir'], false);
+                }
+
+                if (array_key_exists('debug', $config) && $config['debug']) {
+                    $doctrine_config->setSQLLogger(new EchoSQLLogger());
                 }
 
                 return DoctrineEntityManager::create($conexao, $doctrine_config);
