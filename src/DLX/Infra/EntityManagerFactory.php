@@ -42,7 +42,7 @@ class EntityManagerFactory
                 }
 
                 if (array_key_exists('debug', $config) && $config['debug']) {
-                    $doctrine_config->setSQLLogger(new EchoSQLLogger());
+                    $doctrine_config->setSQLLogger(new $config['debug']);
                 }
 
                 return DoctrineEntityManager::create($conexao, $doctrine_config);
