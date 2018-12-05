@@ -23,10 +23,8 @@
  * SOFTWARE.
  */
 
-namespace DLX\Contracts\Handlers;
+namespace DLX\Contracts;
 
-
-use DLX\Contracts\CommandInterface;
 
 interface HandlerInterface
 {
