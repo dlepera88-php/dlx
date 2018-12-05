@@ -35,7 +35,9 @@ class EntityManagerX
     private static $em;
 
     /**
-     * Constructor EntityManagerX
+     * Constructor EntityManagerX.
+     * Para não precisar instanciar o EntityManager sempre que esse método for executado, armazeno a instância e só
+     * instancio quando necessário.
      * @param null|string $tipo_em
      * @param array|null $conexao
      * @param array|null $config
