@@ -27,9 +27,13 @@ namespace DLX\Infra;
 
 
 use DLX\Core\Configure;
+use Doctrine\ORM\EntityManager;
 
 class EntityManagerX
 {
+    /** @var EntityManager */
+    private static $em;
+
     /**
      * Constructor EntityManagerX
      * @param null|string $tipo_em
@@ -43,10 +47,37 @@ class EntityManagerX
         ?array $conexao = null,
         ?array $config = null
     ) {
-        $tipo_em = $tipo_em ?? Configure::get('bd', 'orm');
-        $conexao = $conexao ?? Configure::get('bd', 'conexao');
-        $config = $config ?? Configure::get('bd');
+        if (is_null(self::$em) || (!empty($tipo_em) || !empty($config) || !empty($config))) {
+            $tipo_em = $tipo_em ?? Configure::get('bd', 'orm');
+            $conexao = $conexao ?? Configure::get('bd', 'conexao');
+            $config = $config ?? Configure::get('bd');
 
-        return EntityManagerFactory::create($tipo_em, $conexao, $config);
+            self::$em = EntityManagerFactory::create($tipo_em, $conexao, $config);
+        }
+
+        return self::$em;
+    }
+
+    /**
+     * Instanciar a repository de uma entidade.
+     * @param string $entity
+     * @return \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
+     * @throws \Doctrine\ORM\ORMException
+     */
+    public static function getRepository(string $entity)
+    {
+        return self::getInstance()->getRepository($entity);
+    }
+
+    /**
+     * Instânciar uma entidade apenas com o código ID, para usar como referência
+     * @param string $entity
+     * @param $id
+     * @return bool|\Doctrine\Common\Proxy\Proxy|null|object
+     * @throws \Doctrine\ORM\ORMException
+     */
+    public static function getReference(string $entity, $id)
+    {
+        return self::getInstance()->getReference($entity, $id);
     }
 }
