@@ -82,4 +82,31 @@ class EntityManagerX
     {
         return self::getInstance()->getReference($entity, $id);
     }
+
+    /**
+     * Iniciar uma transação
+     * @throws \Doctrine\ORM\ORMException
+     */
+    public static function beginTransaction(): void
+    {
+        self::getInstance()->beginTransaction();
+    }
+
+    /**
+     * Fazer o rollback de uma transação
+     * @throws \Doctrine\ORM\ORMException
+     */
+    public static function rollback()
+    {
+        self::getInstance()->rollback();
+    }
+
+    /**
+     * Confirmar uma transação
+     * @throws \Doctrine\ORM\ORMException
+     */
+    public static function commit()
+    {
+        self::getInstance()->commit();
+    }
 }
