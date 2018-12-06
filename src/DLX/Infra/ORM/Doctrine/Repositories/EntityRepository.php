@@ -65,9 +65,10 @@ class EntityRepository extends DoctrineEntityRepository implements EntityReposit
     /**
      * Excluir a persistência de dados de uma entidade
      * @param Entity $entity
+     * @throws \Doctrine\ORM\ORMException
      */
     public function delete(Entity $entity): void
     {
-        $this->delete($entity);
+        $this->_em->remove($entity);
     }
 }
