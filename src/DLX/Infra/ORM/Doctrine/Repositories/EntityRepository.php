@@ -70,5 +70,6 @@ class EntityRepository extends DoctrineEntityRepository implements EntityReposit
     public function delete(Entity $entity): void
     {
         $this->_em->remove($entity);
+        $this->_em->flush($entity);
     }
 }
