@@ -28,9 +28,7 @@ namespace DLX\Core\CommandBus;
 
 use League\Tactician\CommandBus;
 use League\Tactician\Handler\CommandHandlerMiddleware;
-use League\Tactician\Handler\CommandNameExtractor\ClassNameExtractor;
 use League\Tactician\Handler\Locator\HandlerLocator;
-use League\Tactician\Handler\MethodNameInflector\HandleInflector;
 
 class CommandBusAdapter
 {
@@ -39,14 +37,8 @@ class CommandBusAdapter
      * @param HandlerLocator|null $locator
      * @return CommandBus
      */
-    public static function create(array $mapping, ?HandlerLocator $locator = null): CommandBus
+    public static function create(CommandHandlerMiddleware $middleware): CommandBus
     {
-        $middleware = new CommandHandlerMiddleware(
-            new ClassNameExtractor(),
-            $locator ?? new DlxLocator($mapping),
-            new HandleInflector()
-        );
-
         return new CommandBus([$middleware]);
     }
 }
