@@ -72,4 +72,16 @@ class EntityRepository extends DoctrineEntityRepository implements EntityReposit
         $this->_em->remove($entity);
         $this->_em->flush($entity);
     }
+
+    /**
+     * Obter uma entidade referenciada e gerenciada pelo Doctrine
+     * @param string $entity
+     * @param $id
+     * @return Entity|null
+     * @throws \Doctrine\ORM\ORMException
+     */
+    public function getReference(string $entity, $id): ?Entity
+    {
+        return $this->_em->getReference($entity, $id);
+    }
 }

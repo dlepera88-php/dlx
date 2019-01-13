@@ -36,4 +36,40 @@ interface EntityRepositoryInterface
      * @param Entity $entity
      */
     public function delete(Entity $entity): void;
+
+    /**
+     * @param $id
+     * @param null $lockMode
+     * @param null $lockVersion
+     * @return mixed
+     */
+    public function find($id, $lockMode = null, $lockVersion = null);
+
+    /**
+     * @return array|null
+     */
+    public function findAll();
+
+    /**
+     * @param array $criteria
+     * @param array|null $orderBy
+     * @param null $limit
+     * @param null $offset
+     * @return array|null
+     */
+    public function findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null);
+
+    /**
+     * @param array $criteria
+     * @param array|null $orderBy
+     * @return mixed
+     */
+    public function findOneBy(array $criteria, array $orderBy = null);
+
+    /**
+     * @param string $entity
+     * @param $id
+     * @return Entity|null
+     */
+    public function getReference(string $entity, $id): ?Entity;
 }
