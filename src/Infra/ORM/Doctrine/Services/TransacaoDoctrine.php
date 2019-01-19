@@ -27,20 +27,20 @@ namespace DLX\Infra\ORM\Doctrine\Services;
 
 
 use DLX\Contracts\TransacaoInterface;
-use DLX\Infra\EntityManagerX;
+use Doctrine\ORM\EntityManager;
 
 class TransacaoDoctrine implements TransacaoInterface
 {
     /**
-     * @var EntityManagerX
+     * @var EntityManager
      */
     private $em;
 
     /**
      * TransacaoDoctrine constructor.
-     * @param EntityManagerX $em
+     * @param EntityManager $em
      */
-    public function __construct(EntityManagerX $em)
+    public function __construct(EntityManager $em)
     {
         $this->em = $em;
     }
@@ -51,7 +51,7 @@ class TransacaoDoctrine implements TransacaoInterface
      */
     public function begin(): void
     {
-        $this->em::beginTransaction();
+        $this->em->beginTransaction();
     }
 
     /**
@@ -60,7 +60,7 @@ class TransacaoDoctrine implements TransacaoInterface
      */
     public function rollback(): void
     {
-        $this->em::rollback();
+        $this->em->rollback();
     }
 
     /**
@@ -69,7 +69,7 @@ class TransacaoDoctrine implements TransacaoInterface
      */
     public function commit(): void
     {
-        $this->em::commit();
+        $this->em->commit();
     }
 
     /**
@@ -80,6 +80,6 @@ class TransacaoDoctrine implements TransacaoInterface
      */
     public function transactional(callable $func)
     {
-        return $this->em::getInstance()->transactional($func);
+        return $this->em->transactional($func);
     }
 }
