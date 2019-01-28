@@ -11,7 +11,6 @@ namespace DLX\Infra\ORM\Doctrine\Repositories;
 
 use DLX\Domain\Entities\Entity;
 use DLX\Domain\Repositories\EntityRepositoryInterface;
-use DLX\Infra\ORM\Exceptions\EntityNaoGernciadaParaAtualizarException;
 use Doctrine\ORM\EntityRepository as DoctrineEntityRepository;
 use Doctrine\ORM\UnitOfWork;
 
@@ -32,16 +31,11 @@ class EntityRepository extends DoctrineEntityRepository implements EntityReposit
     /**
      * Atualizar a persistência de dados de uma entidade
      * @param Entity $entity
-     * @throws EntityNaoGernciadaParaAtualizarException
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function update(Entity $entity): void
     {
-        if ($this->_em->getUnitOfWork()->getEntityState($entity) !== UnitOfWork::STATE_MANAGED) {
-            throw new EntityNaoGernciadaParaAtualizarException(get_class($entity));
-        }
-
         $this->_em->merge($entity);
         $this->_em->flush($entity);
     }
@@ -49,7 +43,6 @@ class EntityRepository extends DoctrineEntityRepository implements EntityReposit
     /**
      * Cria ou atualiza a persistência de dados de uma entidade
      * @param Entity $entity
-     * @throws EntityNaoGernciadaParaAtualizarException
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
@@ -69,7 +62,20 @@ class EntityRepository extends DoctrineEntityRepository implements EntityReposit
      */
     public function delete(Entity $entity): void
     {
+        $this->_em->merge($entity);
         $this->_em->remove($entity);
         $this->_em->flush($entity);
+    }
+
+    /**
+     * Obter uma referência de uma entidade
+     * @param string $entity
+     * @param $id
+     * @return Entity|null
+     * @throws \Doctrine\ORM\ORMException
+     */
+    public function getReference(string $entity, $id): ?Entity
+    {
+        return $this->_em->getReference($entity , $id);
     }
 }

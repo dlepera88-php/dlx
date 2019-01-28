@@ -36,4 +36,12 @@ interface EntityRepositoryInterface
      * @param Entity $entity
      */
     public function delete(Entity $entity): void;
+
+    /**
+     * Obter uma referência de uma entidade
+     * @param string $entity
+     * @param $id
+     * @return Entity|null
+     */
+    public function getReference(string $entity, $id): ?Entity;
 }
