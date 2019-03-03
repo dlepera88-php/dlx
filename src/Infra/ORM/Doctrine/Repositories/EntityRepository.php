@@ -84,4 +84,36 @@ class EntityRepository extends DoctrineEntityRepository implements EntityReposit
     {
         return $this->_em->getReference($entity, $id);
     }
+
+    /**
+     * Utilizar o findBy com like
+     * @param array $criteria
+     * @param array $order_by
+     * @param int|null $limit
+     * @param int|null $offset
+     * @return array
+     */
+    public function findByLike(array $criteria = [], array $order_by = [], ?int $limit = null, ?int $offset = null): array
+    {
+        $qb = $this->createQueryBuilder('e')
+            ->where('1=1');
+
+        foreach ($criteria as $campo => $valor) {
+            $qb->andWhere("e.{$campo} like '%{$valor}%'");
+        }
+
+        foreach ($order_by as $ordem => $tipo) {
+            $qb->addOrderBy($ordem, $tipo);
+        }
+
+        if ($limit > 0) {
+            $qb->setMaxResults($limit);
+        }
+
+        if ($offset > 0) {
+            $qb->setFirstResult($offset);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }

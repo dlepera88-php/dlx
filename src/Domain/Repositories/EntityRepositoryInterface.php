@@ -67,6 +67,16 @@ interface EntityRepositoryInterface
     public function findOneBy(array $criteria, array $orderBy = null);
 
     /**
+     * Utilizar o findBy com like
+     * @param array $criteria
+     * @param array $order_by
+     * @param int|null $limit
+     * @param int|null $offset
+     * @return array
+     */
+    public function findByLike(array $criteria = [], array $order_by = [], ?int $limit = null, ?int $offset = null): array;
+
+    /**
      * @param string $entity
      * @param $id
      * @return Entity|null
