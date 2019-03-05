@@ -100,11 +100,10 @@ class EntityRepository extends DoctrineEntityRepository implements EntityReposit
      */
     public function findByLike(array $criteria = [], array $order_by = [], ?int $limit = null, ?int $offset = null): array
     {
-        $qb = $this->createQueryBuilder('e')
-            ->where('1=1');
+        $qb = $this->createQueryBuilder('e');
 
         foreach ($criteria as $campo => $valor) {
-            $qb->andWhere("e.{$campo} like '%{$valor}%'");
+            $qb->orWhere("e.{$campo} like '%{$valor}%'");
         }
 
         foreach ($order_by as $ordem => $tipo) {
