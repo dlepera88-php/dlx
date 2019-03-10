@@ -103,7 +103,11 @@ class EntityRepository extends DoctrineEntityRepository implements EntityReposit
         $qb = $this->createQueryBuilder('e');
 
         foreach ($criteria as $campo => $valor) {
-            $qb->orWhere("e.{$campo} like '%{$valor}%'");
+            if (is_array($valor)) {
+                $qb->orWhere("e.{$campo} in (" . implode(',', $valor) . ")");
+            } else {
+                $qb->orWhere("e.{$campo} like '%{$valor}%'");
+            }
         }
 
         foreach ($order_by as $ordem => $tipo) {
