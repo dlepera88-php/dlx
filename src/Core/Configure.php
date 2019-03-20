@@ -164,6 +164,6 @@ class Configure
             throw new ArquivoConfiguracaoNaoEncontradoException($arquivo_configuracao);
         }
 
-        $_ENV[self::$ambiente] = include_once $arquivo_configuracao;
+        $_ENV[self::$ambiente] = include $arquivo_configuracao;
     }
 }
