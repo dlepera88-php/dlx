@@ -31,7 +31,6 @@ class EntityRepository extends DoctrineEntityRepository implements EntityReposit
     /**
      * Atualizar a persistência de dados de uma entidade
      * @param Entity $entity
-     * @throws EntityNaoGernciadaParaAtualizarException
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
