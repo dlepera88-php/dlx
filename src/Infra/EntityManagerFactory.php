@@ -32,13 +32,13 @@ class EntityManagerFactory
             case self::ORM_DOCTRINE:
                 switch ($config['mapping']) {
                     case 'yaml':
-                        $doctrine_config = Setup::createYAMLMetadataConfiguration($config['dir'], false);
+                        $doctrine_config = Setup::createYAMLMetadataConfiguration($config['dir'], (bool)$config['dev-mode']);
                         break;
                     case 'xml':
-                        $doctrine_config = Setup::createXMLMetadataConfiguration($config['dir'], false);
+                        $doctrine_config = Setup::createXMLMetadataConfiguration($config['dir'], $config['dev-mode']);
                         break;
                     default:
-                        $doctrine_config = Setup::createAnnotationMetadataConfiguration($config['dir'], false);
+                        $doctrine_config = Setup::createAnnotationMetadataConfiguration($config['dir'], $config['dev-mode']);
                 }
 
                 if (array_key_exists('debug', $config) && $config['debug']) {

@@ -24,7 +24,7 @@ class CriarCommandByArray implements ServiceInterface
     }
 
     /**
-     * Executar o serviço.
+     * Executar o serviÃ§o.
      * @return mixed
      */
     public function executar()

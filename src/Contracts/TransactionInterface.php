@@ -26,7 +26,7 @@
 namespace DLX\Contracts;
 
 
-interface TransacaoInterface
+interface TransactionInterface
 {
     /**
      * Iniciar uma transação

@@ -26,10 +26,10 @@
 namespace DLX\Infra\ORM\Doctrine\Services;
 
 
-use DLX\Contracts\TransacaoInterface;
+use DLX\Contracts\TransactionInterface;
 use Doctrine\ORM\EntityManager;
 
-class TransacaoDoctrine implements TransacaoInterface
+class DoctrineTransaction implements TransactionInterface
 {
     /**
      * @var EntityManager
@@ -37,7 +37,7 @@ class TransacaoDoctrine implements TransacaoInterface
     private $em;
 
     /**
-     * TransacaoDoctrine constructor.
+     * DoctrineTransaction constructor.
      * @param EntityManager $em
      */
     public function __construct(EntityManager $em)
