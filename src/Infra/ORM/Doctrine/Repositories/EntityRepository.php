@@ -12,6 +12,8 @@ namespace DLX\Infra\ORM\Doctrine\Repositories;
 use DLX\Domain\Entities\Entity;
 use DLX\Domain\Repositories\EntityRepositoryInterface;
 use Doctrine\ORM\EntityRepository as DoctrineEntityRepository;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Doctrine\ORM\UnitOfWork;
 
 class EntityRepository extends DoctrineEntityRepository implements EntityRepositoryInterface
@@ -19,8 +21,8 @@ class EntityRepository extends DoctrineEntityRepository implements EntityReposit
     /**
      * Criar a persistência de dados de uma entidade
      * @param Entity $entity
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws ORMException
+     * @throws OptimisticLockException
      */
     public function create(Entity $entity): void
     {
@@ -31,20 +33,20 @@ class EntityRepository extends DoctrineEntityRepository implements EntityReposit
     /**
      * Atualizar a persistência de dados de uma entidade
      * @param Entity $entity
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws ORMException
+     * @throws OptimisticLockException
      */
     public function update(Entity $entity): void
     {
-        $this->_em->merge($entity);
+        $entity = $this->_em->merge($entity);
         $this->_em->flush($entity);
     }
 
     /**
      * Cria ou atualiza a persistência de dados de uma entidade
      * @param Entity $entity
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws ORMException
+     * @throws OptimisticLockException
      */
     public function save(Entity $entity): void
     {
@@ -58,7 +60,7 @@ class EntityRepository extends DoctrineEntityRepository implements EntityReposit
     /**
      * Excluir a persistência de dados de uma entidade
      * @param Entity $entity
-     * @throws \Doctrine\ORM\ORMException
+     * @throws ORMException
      */
     public function delete(Entity $entity): void
     {
@@ -71,7 +73,7 @@ class EntityRepository extends DoctrineEntityRepository implements EntityReposit
      * @param string $entity
      * @param $id
      * @return Entity|null
-     * @throws \Doctrine\ORM\ORMException
+     * @throws ORMException
      */
     public function getReference(string $entity, $id): ?Entity
     {
