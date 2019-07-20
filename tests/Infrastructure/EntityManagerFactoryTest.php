@@ -23,18 +23,19 @@
  * SOFTWARE.
  */
 
-namespace DLX\Tests\Infra;
+namespace DLX\Tests\Infrastructure;
 
 
-use DLX\Infra\EntityManagerFactory;
-use DLX\Infra\Exceptions\EntityManagerNaoEncontradoException;
+use DLX\Infrastructure\EntityManagerFactory;
+use DLX\Infrastructure\Exceptions\EntityManagerNaoEncontradoException;
 use Doctrine\ORM\EntityManager as DoctrineEntityManager;
+use Doctrine\ORM\ORMException;
 use PHPUnit\Framework\TestCase;
 
 class EntityManagerFactoryTest extends TestCase
 {
     /**
-     * @throws \Doctrine\ORM\ORMException
+     * @throws ORMException
      */
     public function test_create_EntityManager_doctrine()
     {
@@ -58,7 +59,7 @@ class EntityManagerFactoryTest extends TestCase
     }
 
     /**
-     * @throws \Doctrine\ORM\ORMException
+     * @throws ORMException
      */
     public function test_create_EntityManager_desconhecido()
     {

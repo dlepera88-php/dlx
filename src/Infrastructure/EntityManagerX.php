@@ -23,7 +23,7 @@
  * SOFTWARE.
  */
 
-namespace DLX\Infra;
+namespace DLX\Infrastructure;
 
 
 use DLX\Core\Configure;

@@ -6,16 +6,24 @@
  * Time: 23:21
  */
 
-namespace DLX\Infra\ORM\Doctrine\Repositories;
+namespace DLX\Infrastructure\ORM\Doctrine\Repositories;
 
 
 use DLX\Domain\Entities\Entity;
 use DLX\Domain\Repositories\EntityRepositoryInterface;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Collections\Expr\Comparison;
 use Doctrine\ORM\EntityRepository as DoctrineEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\Query\QueryException;
 use Doctrine\ORM\UnitOfWork;
 
+/**
+ * Class EntityRepository
+ * @package DLX\Infrastructure\ORM\Doctrine\Repositories
+ * @covers EntityRepositoryTest
+ */
 class EntityRepository extends DoctrineEntityRepository implements EntityRepositoryInterface
 {
     /**
@@ -93,12 +101,42 @@ class EntityRepository extends DoctrineEntityRepository implements EntityReposit
     {
         $qb = $this->createQueryBuilder('e');
 
-        foreach ($criteria as $campo => $valor) {
-            if (is_array($valor)) {
-                $qb->orWhere("e.{$campo} in (" . implode(',', $valor) . ")");
-            } else {
-                $qb->orWhere("e.{$campo} like '%{$valor}%'");
+        /**
+         * @param string $campo
+         * @param $valor
+         * @return Comparison
+         */
+        $getExprCriteria = function (string $campo, $valor) {
+            return is_array($valor)
+                ? Criteria::expr()->in($campo, $valor)
+                : Criteria::expr()->contains($campo, $valor);
+        };
+
+        $loopCriteria = function (array $criteria, string $tipo) use ($getExprCriteria, &$qb) {
+            foreach ($criteria as $campo => $valor) {
+                $expr = $getExprCriteria($campo, $valor);
+                $criteria = Criteria::create();
+                $tipo === 'and' ? $criteria->andWhere($expr) : $criteria->orWhere($expr);
+                $qb->addCriteria($criteria);
             }
+        };
+
+        // Adicionar wheres com AND
+        if (array_key_exists('and', $criteria) && is_array($criteria['and'])) {
+            $loopCriteria($criteria['and'], 'and');
+            unset($criteria['and']);
+        }
+
+        // Adicionar wheres com OR
+        if (array_key_exists('or', $criteria) && is_array($criteria['or'])) {
+            $loopCriteria($criteria['or'], 'or');
+            unset($criteria['or']);
+        }
+
+        // Se sobraram itens na criteria, são considerados com OR
+        if (!empty($criteria)) {
+            $loopCriteria($criteria, 'or');
+            unset($criteria);
         }
 
         foreach ($order_by as $ordem => $tipo) {
@@ -113,6 +151,8 @@ class EntityRepository extends DoctrineEntityRepository implements EntityReposit
             $qb->setFirstResult($offset);
         }
 
-        return $qb->getQuery()->getResult();
+        $query = $qb->getQuery();
+
+        return $query->getResult();
     }
 }

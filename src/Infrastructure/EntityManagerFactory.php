@@ -6,9 +6,9 @@
  * Time: 16:46
  */
 
-namespace DLX\Infra;
+namespace DLX\Infrastructure;
 
-use DLX\Infra\Exceptions\EntityManagerNaoEncontradoException;
+use DLX\Infrastructure\Exceptions\EntityManagerNaoEncontradoException;
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Logging\EchoSQLLogger;
 use Doctrine\DBAL\Types\Type;

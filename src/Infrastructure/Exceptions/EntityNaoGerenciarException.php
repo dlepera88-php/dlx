@@ -6,7 +6,7 @@
  * Time: 16:23
  */
 
-namespace DLX\Infra\Exceptions;
+namespace DLX\Infrastructure\Exceptions;
 
 
 use DLX\Core\Exceptions\SystemException;
@@ -19,6 +19,6 @@ class EntityNaoGerenciarException extends SystemException
      */
     public function __construct(string $entity)
     {
-        parent::__construct("A entidade {$entity} não está gerenciada e não pode ser alterada ou excluída.");
+        parent::__construct("A entidade {$entity} nï¿½o estï¿½ gerenciada e nï¿½o pode ser alterada ou excluï¿½da.");
     }
 }

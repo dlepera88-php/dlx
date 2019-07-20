@@ -23,7 +23,7 @@
  * SOFTWARE.
  */
 
-namespace DLX\Infra\ORM\Doctrine\Services;
+namespace DLX\Infrastructure\ORM\Doctrine\Services;
 
 
 use DLX\Contracts\TransactionInterface;

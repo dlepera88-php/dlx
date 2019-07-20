@@ -23,7 +23,7 @@
  * SOFTWARE.
  */
 
-namespace DLX\Infra\Exceptions;
+namespace DLX\Infrastructure\Exceptions;
 
 
 use DLX\Core\Exceptions\SystemException;
