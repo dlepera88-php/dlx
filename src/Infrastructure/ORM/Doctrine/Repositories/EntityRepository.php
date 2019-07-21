@@ -107,7 +107,15 @@ class EntityRepository extends DoctrineEntityRepository implements EntityReposit
          */
         $createExpr = function ($valor, string $campo) use ($qb) {
             $expr = $qb->expr();
-            return is_array($valor) ? $expr->in($campo, $valor) : $expr->like($campo, $valor);
+            $campo = "e.{$campo}";
+
+            switch(gettype($valor)) {
+                case 'array': $comparacao = $expr->in($campo, $valor); break;
+                case 'boolean': $comparacao =  $expr->eq($campo, (int)$valor); break;
+                default: $comparacao = $expr->like($campo, $valor);
+            }
+
+            return $comparacao;
         };
 
         /**
@@ -115,11 +123,16 @@ class EntityRepository extends DoctrineEntityRepository implements EntityReposit
          * @param string $tipo
          */
         $loopCriteria = function (array $criteria, string $tipo) use ($createExpr, &$qb) {
-            array_walk($criteria, $createExpr);
+            $lista_expr = [];
+
+            foreach ($criteria as $campo => $valor) {
+                $lista_expr[] = $createExpr($valor, $campo);
+            }
+            // array_walk($criteria, $createExpr);
 
             $clausula_where = $tipo === 'and'
-                ? call_user_func_array([$qb->expr(), 'andX'], $criteria)
-                : call_user_func_array([$qb->expr(), 'orX'], $criteria);
+                ? call_user_func_array([$qb->expr(), 'andX'], $lista_expr)
+                : call_user_func_array([$qb->expr(), 'orX'], $lista_expr);
 
             $qb->where($clausula_where);
         };
