@@ -11,12 +11,11 @@ namespace DLX\Infrastructure\ORM\Doctrine\Repositories;
 
 use DLX\Domain\Entities\Entity;
 use DLX\Domain\Repositories\EntityRepositoryInterface;
-use Doctrine\Common\Collections\Criteria;
-use Doctrine\Common\Collections\Expr\Comparison;
 use Doctrine\ORM\EntityRepository as DoctrineEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
-use Doctrine\ORM\Query\QueryException;
+use Doctrine\ORM\Query\Expr\Comparison;
+use Doctrine\ORM\Query\Expr\Func;
 use Doctrine\ORM\UnitOfWork;
 
 /**
@@ -102,23 +101,27 @@ class EntityRepository extends DoctrineEntityRepository implements EntityReposit
         $qb = $this->createQueryBuilder('e');
 
         /**
-         * @param string $campo
          * @param $valor
-         * @return Comparison
+         * @param string $campo
+         * @return Comparison|Func
          */
-        $getExprCriteria = function (string $campo, $valor) {
-            return is_array($valor)
-                ? Criteria::expr()->in($campo, $valor)
-                : Criteria::expr()->contains($campo, $valor);
+        $createExpr = function ($valor, string $campo) use ($qb) {
+            $expr = $qb->expr();
+            return is_array($valor) ? $expr->in($campo, $valor) : $expr->like($campo, $valor);
         };
 
-        $loopCriteria = function (array $criteria, string $tipo) use ($getExprCriteria, &$qb) {
-            foreach ($criteria as $campo => $valor) {
-                $expr = $getExprCriteria($campo, $valor);
-                $criteria = Criteria::create();
-                $tipo === 'and' ? $criteria->andWhere($expr) : $criteria->orWhere($expr);
-                $qb->addCriteria($criteria);
-            }
+        /**
+         * @param array $criteria
+         * @param string $tipo
+         */
+        $loopCriteria = function (array $criteria, string $tipo) use ($createExpr, &$qb) {
+            array_walk($criteria, $createExpr);
+
+            $clausula_where = $tipo === 'and'
+                ? call_user_func_array([$qb->expr(), 'andX'], $criteria)
+                : call_user_func_array([$qb->expr(), 'orX'], $criteria);
+
+            $qb->where($clausula_where);
         };
 
         // Adicionar wheres com AND
