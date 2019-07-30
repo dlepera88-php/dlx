@@ -11,6 +11,8 @@ namespace DLX\Infrastructure\ORM\Doctrine\Repositories;
 
 use DLX\Domain\Entities\Entity;
 use DLX\Domain\Repositories\EntityRepositoryInterface;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ParameterType;
 use Doctrine\ORM\EntityRepository as DoctrineEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -107,12 +109,21 @@ class EntityRepository extends DoctrineEntityRepository implements EntityReposit
          */
         $createExpr = function ($valor, string $campo) use ($qb) {
             $expr = $qb->expr();
-            $campo = "e.{$campo}";
+            $campo_com_alias = "e.{$campo}";
+            $param = ":{$campo}";
 
             switch(gettype($valor)) {
-                case 'array': $comparacao = $expr->in($campo, $valor); break;
-                case 'boolean': $comparacao =  $expr->eq($campo, (int)$valor); break;
-                default: $comparacao = $expr->like($campo, $valor);
+                case 'array':
+                    $comparacao = $expr->in($campo_com_alias, $param);
+                    $qb->setParameter($param, $valor, Connection::PARAM_STR_ARRAY);
+                    break;
+                case 'boolean':
+                    $comparacao =  $expr->eq($campo_com_alias, $param);
+                    $qb->setParameter($param, $valor, ParameterType::BOOLEAN);
+                    break;
+                default:
+                    $comparacao = $expr->like($campo_com_alias, $param);
+                    $qb->setParameter($param, "%{$valor}%");
             }
 
             return $comparacao;
@@ -134,7 +145,7 @@ class EntityRepository extends DoctrineEntityRepository implements EntityReposit
                 ? call_user_func_array([$qb->expr(), 'andX'], $lista_expr)
                 : call_user_func_array([$qb->expr(), 'orX'], $lista_expr);
 
-            $qb->where($clausula_where);
+            $qb->andWhere($clausula_where);
         };
 
         // Adicionar wheres com AND
