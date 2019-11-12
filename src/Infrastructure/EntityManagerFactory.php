@@ -9,14 +9,18 @@
 namespace DLX\Infrastructure;
 
 use DLX\Infrastructure\Exceptions\EntityManagerNaoEncontradoException;
+use Doctrine\Common\EventManager;
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Logging\EchoSQLLogger;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Events;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager as DoctrineEntityManager;
+use DoctrinePrefixes\DatabasePrefix;
+use DoctrinePrefixes\TablePrefix;
 use Exception;
 
 class EntityManagerFactory
@@ -37,13 +41,24 @@ class EntityManagerFactory
         switch ($tipo_em) {
             case self::ORM_DOCTRINE:
                 $doctrine_config = self::getDoctrineConfig($config['mapping'], $config['dir'], $config['dev-mode']);
+                $doctrine_event_manager = new EventManager;
 
                 if (array_key_exists('debug', $config) && $config['debug']) {
                     $doctrine_config->setSQLLogger(new $config['debug']);
                 }
 
+                if (array_key_exists('db-prefix', $config)) {
+                    $database_prefix = new DatabasePrefix($config['db-prefix']);
+                    $doctrine_event_manager->addEventListener(Events::loadClassMetadata, $database_prefix);
+                }
+
+                if (array_key_exists('table-prefix', $config)) {
+                    $table_prefix = new TablePrefix($config['table-prefix']);
+                    $doctrine_event_manager->addEventListener(Events::loadClassMetadata, $table_prefix);
+                }
+
                 /** @var EntityManager $em */
-                $em = DoctrineEntityManager::create($conexao, $doctrine_config);
+                $em = DoctrineEntityManager::create($conexao, $doctrine_config, $doctrine_event_manager);
 
                 if (array_key_exists('types', $config)) {
                     self::adicionarDoctrineTypes($em, $config['types']);
