@@ -9,7 +9,7 @@
     "doctrine/orm": "^2.6.0",
     "symfony/yaml": "^4.1.6",
     "league/tactician": "^1.0",
-    "dlepera88-php/doctrine-prefixes": "^0.0.1"
+    "dlepera88-php/doctrine-prefixes": "^0.0.2"
   },
   "require-dev": {
     "phpunit/phpunit": "^7.5"
