@@ -26,6 +26,6 @@
     }
   },
   "suggest": {
-    "dlepera88-php/painel-dlx": "Painel de administração"
+    "painel-dlx/painel-dlx": "Painel de administração"
   }
 }
