@@ -1,5 +1,6 @@
 {
   "name": "dlepera88-php/dlx",
+  "description": "Núcleo para desenvolvimento do Painel DLX (ou outros projetos que desejem usar a arquitetura Hexagonal) e seus derivados.",
   "version": "1.2.6",
   "license": "MIT",
   "authors": [
