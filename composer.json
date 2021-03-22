@@ -1,15 +1,16 @@
 {
   "name": "dlepera88-php/dlx",
   "description": "Núcleo para desenvolvimento do Painel DLX (ou outros projetos que desejem usar a arquitetura Hexagonal) e seus derivados.",
-  "version": "1.2.6",
+  "version": "1.3.2",
   "license": "MIT",
   "authors": [
     {"name": "Diego Lepera", "email": "dlepera88@gmail.com"}
   ],
   "require": {
-    "doctrine/orm": "2.6.*",
+    "doctrine/orm": "^2.6.0",
     "symfony/yaml": "^4.1.6",
-    "league/tactician": "^1.0"
+    "league/tactician": "^1.0",
+    "dlepera88-php/doctrine-prefixes": "^0.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^7.5"
